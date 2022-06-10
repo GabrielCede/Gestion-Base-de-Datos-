@@ -1,0 +1,404 @@
+/*CEDEÑO SÁNCHEZ ECKERD GABRIEL 5TO "B" */                                                 
+                                                          /*CREACIÓN DE LAS TABLAS*/
+
+
+/*==============================================================*/
+/* Table: CLIENTE                                               */
+/*==============================================================*/
+create table CLIENTE (
+   CLIENTE_ID           SERIAL               not null,
+   CEDULA               VARCHAR(10)          not null,
+   NOMBRES              VARCHAR(15)          null,
+   APELIIDOS            VARCHAR(15)          null,
+   DIRECCION_1          VARCHAR(20)          null,
+   DIRECCION_2          VARCHAR(20)          null,
+   TELEFONO_1           VARCHAR(10)          null,
+   TELEFONO_2           VARCHAR(10)          null,
+   constraint PK_CLIENTE primary key (CLIENTE_ID)
+);
+
+/*==============================================================*/
+/* Index: CLIENTE_PK                                            */
+/*==============================================================*/
+create unique index CLIENTE_PK on CLIENTE (
+CLIENTE_ID
+);
+
+/*==============================================================*/
+/* Table: FACTURA                                               */
+/*==============================================================*/
+create table FACTURA (
+   FACTURA_ID           VARCHAR(10)          not null,
+   CLIENTE_ID           INT4                 not null,
+   FECHA_FACTURA        DATE                 null,
+   DETALLE_FACTURA      VARCHAR(30)          null,
+   TOTAL_FACTURA        MONEY                null,
+   constraint PK_FACTURA primary key (FACTURA_ID)
+);
+
+/*==============================================================*/
+/* Index: FACTURA_PK                                            */
+/*==============================================================*/
+create unique index FACTURA_PK on FACTURA (
+FACTURA_ID
+);
+
+/*==============================================================*/
+/* Index: CLIENTE_FACTURA_FK                                    */
+/*==============================================================*/
+create  index CLIENTE_FACTURA_FK on FACTURA (
+CLIENTE_ID
+);
+
+/*==============================================================*/
+/* Table: FACTURA_RESERVACION                                   */
+/*==============================================================*/
+create table FACTURA_RESERVACION (
+   RFACTURA_ID          SERIAL               not null,
+   RESERVACION_ID       INT4                 not null,
+   FACTURA_ID           VARCHAR(10)          not null,
+   constraint PK_FACTURA_RESERVACION primary key (RFACTURA_ID)
+);
+
+/*==============================================================*/
+/* Index: FACTURA_RESERVACION_PK                                */
+/*==============================================================*/
+create unique index FACTURA_RESERVACION_PK on FACTURA_RESERVACION (
+RFACTURA_ID
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_12_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_12_FK on FACTURA_RESERVACION (
+RESERVACION_ID
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_13_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_13_FK on FACTURA_RESERVACION (
+FACTURA_ID
+);
+
+/*==============================================================*/
+/* Table: HABITACION                                            */
+/*==============================================================*/
+create table HABITACION (
+   HABITACION_ID        SERIAL               not null,
+   RESERVACION_ID       INT4                 not null,
+   TIPO_HABITACION      VARCHAR(20)          null,
+   TIPO_CAMA            VARCHAR(20)          null,
+   CAPACIDAD_HABTACION  INT2                 null,
+   constraint PK_HABITACION primary key (HABITACION_ID)
+);
+
+/*==============================================================*/
+/* Index: HABITACION_PK                                         */
+/*==============================================================*/
+create unique index HABITACION_PK on HABITACION (
+HABITACION_ID
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_10_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_10_FK on HABITACION (
+RESERVACION_ID
+);
+
+/*==============================================================*/
+/* Table: OBSERVACION                                           */
+/*==============================================================*/
+create table OBSERVACION (
+   OBSERVACION_ID       SERIAL               not null,
+   CLIENTE_ID           INT4                 not null,
+   HABITACION_ID        INT4                 not null,
+   ONBSERVACION_CLIENTE VARCHAR(60)          null,
+   OBSERVACION_FECHA    DATE                 null,
+   constraint PK_OBSERVACION primary key (OBSERVACION_ID)
+);
+
+/*==============================================================*/
+/* Index: OBSERVACION_PK                                        */
+/*==============================================================*/
+create unique index OBSERVACION_PK on OBSERVACION (
+OBSERVACION_ID
+);
+
+/*==============================================================*/
+/* Index: OBSERVACION_CLIENTE_FK                                */
+/*==============================================================*/
+create  index OBSERVACION_CLIENTE_FK on OBSERVACION (
+CLIENTE_ID
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_9_FK                                     */
+/*==============================================================*/
+create  index RELATIONSHIP_9_FK on OBSERVACION (
+HABITACION_ID
+);
+
+/*==============================================================*/
+/* Table: PERSONAL                                              */
+/*==============================================================*/
+create table PERSONAL (
+   PERSONAL_ID          SERIAL               not null,
+   CEDULA               VARCHAR(10)          null,
+   NOMBRES_P            VARCHAR(20)          null,
+   APELLIDO_P           VARCHAR(20)          null,
+   TELEFONO             VARCHAR(10)          null,
+   CARGO_P              VARCHAR(20)          null,
+   constraint PK_PERSONAL primary key (PERSONAL_ID)
+);
+
+/*==============================================================*/
+/* Index: PERSONAL_PK                                           */
+/*==============================================================*/
+create unique index PERSONAL_PK on PERSONAL (
+PERSONAL_ID
+);
+
+/*==============================================================*/
+/* Table: RESERVACION                                           */
+/*==============================================================*/
+create table RESERVACION (
+   RESERVACION_ID       SERIAL               not null,
+   CLIENTE_ID           INT4                 not null,
+   PERSONAL_ID          INT4                 not null,
+   FECHA_ENTRADA        DATE                 null,
+   FECHA_SALIDA         DATE                 null,
+   PRECIO_RESERVACION   MONEY                null,
+   constraint PK_RESERVACION primary key (RESERVACION_ID)
+);
+
+/*==============================================================*/
+/* Index: RESERVACION_PK                                        */
+/*==============================================================*/
+create unique index RESERVACION_PK on RESERVACION (
+RESERVACION_ID
+);
+
+/*==============================================================*/
+/* Index: CLIENTE_RESERVACION_FK                                */
+/*==============================================================*/
+create  index CLIENTE_RESERVACION_FK on RESERVACION (
+CLIENTE_ID
+);
+
+/*==============================================================*/
+/* Index: PERSONAL_RESERVACION_FK                               */
+/*==============================================================*/
+create  index PERSONAL_RESERVACION_FK on RESERVACION (
+PERSONAL_ID
+);
+
+/*==============================================================*/
+/* Table: SERVICIO                                              */
+/*==============================================================*/
+create table SERVICIO (
+   SERVICIO_ID          SERIAL               not null,
+   TIPO_SERVICIO        VARCHAR(30)          null,
+   COSTO_SERVICIO       MONEY                null,
+   DESCRIPCION_SERVICIO VARCHAR(70)          null,
+   constraint PK_SERVICIO primary key (SERVICIO_ID)
+);
+
+/*==============================================================*/
+/* Index: SERVICIO_PK                                           */
+/*==============================================================*/
+create unique index SERVICIO_PK on SERVICIO (
+SERVICIO_ID
+);
+
+/*==============================================================*/
+/* Table: SERVICIO_REQUERIDO                                    */
+/*==============================================================*/
+create table SERVICIO_REQUERIDO (
+   SERVICIO_R_ID        SERIAL               not null,
+   RESERVACION_ID       INT4                 not null,
+   SERVICIO_ID          INT4                 not null,
+   FECHA_SERVICIO       DATE                 null,
+   constraint PK_SERVICIO_REQUERIDO primary key (SERVICIO_R_ID)
+);
+
+/*==============================================================*/
+/* Index: SERVICIO_REQUERIDO_PK                                 */
+/*==============================================================*/
+create unique index SERVICIO_REQUERIDO_PK on SERVICIO_REQUERIDO (
+SERVICIO_R_ID
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_8_FK                                     */
+/*==============================================================*/
+create  index RELATIONSHIP_8_FK on SERVICIO_REQUERIDO (
+RESERVACION_ID
+);
+
+/*==============================================================*/
+/* Index: RELATIONSHIP_11_FK                                    */
+/*==============================================================*/
+create  index RELATIONSHIP_11_FK on SERVICIO_REQUERIDO (
+SERVICIO_ID
+);
+
+
+                                                    /*CREACIÓN DE LAS LLAVES FORANEAS */
+
+
+alter table FACTURA
+   add constraint FK_FACTURA_CLIENTE_F_CLIENTE foreign key (CLIENTE_ID)
+      references CLIENTE (CLIENTE_ID)
+      on delete restrict on update restrict;
+
+alter table FACTURA_RESERVACION
+   add constraint FK_FACTURA__RELATIONS_RESERVAC foreign key (RESERVACION_ID)
+      references RESERVACION (RESERVACION_ID)
+      on delete restrict on update restrict;
+
+alter table FACTURA_RESERVACION
+   add constraint FK_FACTURA__RELATIONS_FACTURA foreign key (FACTURA_ID)
+      references FACTURA (FACTURA_ID)
+      on delete restrict on update restrict;
+
+alter table HABITACION
+   add constraint FK_HABITACI_RELATIONS_RESERVAC foreign key (RESERVACION_ID)
+      references RESERVACION (RESERVACION_ID)
+      on delete restrict on update restrict;
+
+alter table OBSERVACION
+   add constraint FK_OBSERVAC_OBSERVACI_CLIENTE foreign key (CLIENTE_ID)
+      references CLIENTE (CLIENTE_ID)
+      on delete restrict on update restrict;
+
+alter table OBSERVACION
+   add constraint FK_OBSERVAC_RELATIONS_HABITACI foreign key (HABITACION_ID)
+      references HABITACION (HABITACION_ID)
+      on delete restrict on update restrict;
+
+alter table RESERVACION
+   add constraint FK_RESERVAC_CLIENTE_R_CLIENTE foreign key (CLIENTE_ID)
+      references CLIENTE (CLIENTE_ID)
+      on delete restrict on update restrict;
+
+alter table RESERVACION
+   add constraint FK_RESERVAC_PERSONAL__PERSONAL foreign key (PERSONAL_ID)
+      references PERSONAL (PERSONAL_ID)
+      on delete restrict on update restrict;
+
+alter table SERVICIO_REQUERIDO
+   add constraint FK_SERVICIO_RELATIONS_SERVICIO foreign key (SERVICIO_ID)
+      references SERVICIO (SERVICIO_ID)
+      on delete restrict on update restrict;
+
+alter table SERVICIO_REQUERIDO
+   add constraint FK_SERVICIO_RELATIONS_RESERVAC foreign key (RESERVACION_ID)
+      references RESERVACION (RESERVACION_ID)
+      on delete restrict on update restrict;
+	  
+				
+	  						                                    	/* INGRESO DE DATOS */
+
+	  /* DATOS Clientes*/
+	  INSERT INTO cliente VALUES('001','0958156948','Erick Gael','Cedeño Loor','Manta-Santa Marta','Manta-Laureles','0991076944','0986005967');
+	  INSERT INTO cliente VALUES('002','0958156675','Andrea Isabel','Cedeño Sánchez','Manta-San Carlos','Manta-Jocay','0991076876','0986005432');
+	  INSERT INTO cliente VALUES('003','0958156000','Ruth Esther','Sánchez León','Durán-Recreo Mz322','Manta-Santa Marta','0991097542','0986059876');
+	  
+	  /* DATOS Personal*/
+	  INSERT INTO personal VALUES('001','0965437896','Fabricio Manuel','Celel Castro','0956424564','Recepción');
+	  INSERT INTO personal VALUES('002','0965437765','Manuel Elias','Zárate Lalama','0956428766','Botones');
+	  INSERT INTO personal VALUES('003','0965437432','Ramón Eliseo','Valdéz Ordóñez','0995642444','Limpieza');
+	  
+	  /*Reservación (Precio por día Suite600$, sencilla 300$)*/
+		INSERT INTO reservacion VALUES('001','001','001','2019/11/02 09:00','2019/11/11 13:00','3000');
+		INSERT INTO reservacion VALUES('002','002','001','2020/04/07 13:00','2020/04/10 14:00','2400');
+		INSERT INTO reservacion VALUES('003','003','001','2020/07/07 07:00','2020/07/09 16:00','900');
+		
+		/*Habitación */
+		INSERT INTO habitacion VALUES('056','001','Sencilla','Individual','2');
+		INSERT INTO habitacion VALUES('051','002','Suite','Individual','2');
+		INSERT INTO habitacion VALUES('040','003','Matrimonial','Cama Full','2');
+		
+		/*Servicio*/
+
+		INSERT INTO servicio VALUES('001','Limpeza al Cuarto','25','Limpieza total:Baño,habitación,cambio de sábanas y ambientador');
+		INSERT INTO servicio VALUES('002','Comida al Cuarto','35','Se muestra 3 menús diferentes de los cuales puede elegir 1 plato');
+		INSERT INTO servicio VALUES('003','Wi-Fi','10','Se le permite conectarse al internet 5G del hotel');
+		
+								/*Servicios Requeridos*/
+
+		/*Servicio para Eric Gael*/
+
+		INSERT INTO servicio_requerido VALUES('001','001','003','2019/11/02');
+		INSERT INTO servicio_requerido VALUES('002','001','001','2019/11/05');
+		INSERT INTO servicio_requerido VALUES('003','001','002','2019/11/03');
+
+		/*Servicio para Andrea*/
+		INSERT INTO servicio_requerido VALUES('004','002','003','2020/04/07');
+
+		/*Servicio para Ruth*/
+		INSERT INTO servicio_requerido VALUES('005','003','002','2020/07/08');
+
+		/*Factura */
+
+		INSERT INTO factura VALUES('001','001','2019/11/11','hab.+serv.=3000+70','3070');
+		INSERT INTO factura VALUES('002','002','2020/04/10','hab.+serv.=2400+10','2410');
+		INSERT INTO factura VALUES('003','003','2020/07/09','hab.+serv.=900+35','935');
+
+		/*Factura por Reservación*/
+		INSERT INTO factura_reservacion VALUES('001','001','001');
+		INSERT INTO factura_reservacion VALUES('002','002','002');
+		INSERT INTO factura_reservacion VALUES('003','003','003');
+
+		*Observación al Cliente*/
+
+		INSERT INTO observacion VALUES('001','001','056','Sin escándalos y respetuoso con los empleados','2019/11/11');
+		INSERT INTO observacion VALUES('002','002','051','Compartió la clave secreta Wi-Fi a terceros','2020/04/10');
+
+
+
+
+
+
+
+
+
+
+/*CONSULTAS*/
+
+
+
+/* Mostrar los clientes con la habitación en la que se hospedaron  */
+
+select * from cliente 
+inner join habitacion
+on cliente.cliente_id= habitacion.reservacion_id
+
+
+
+/*Mostrar el cliente y la observación registrada por el hotel */
+
+select 
+	cliente.cliente_id,
+	cliente.nombres as nombre,
+	observacion.onbservacion_cliente
+from observacion
+
+inner join cliente on cliente.cliente_id= observacion_id
+
+
+/*Servicios Adquiridos por los clientes */
+
+
+select 
+	cliente.cliente_id,
+	servicio_requerido.servcio.id,
+	servicio_requerido.fecha_servicio
+from servicio_requerido
+
+inner join cliente on cliente.cliente_id= servicio_requerido.servicio_r_id;
+
+
+		
